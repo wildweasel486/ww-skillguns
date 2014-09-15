@@ -1,0 +1,13 @@
+Credits for weapon sounds:
+
+pistolnm.ogg and pistol.wav - Yakuza 4
+RELOAD0.wav - ???
+RELOAD1,2,3.wav - No One Lives Forever 2
+PSTREADY.wav - Yakuza 4 (modified)
+dryfire.ogg - Action Half-Life
+pchwall, pchhit, pchswing.ogg - Yakuza 4
+shotgun, shotgnm.ogg - Resident Evil 4
+shotload - Half-Life 2 (modified)
+shotback, shotfwd - Yakuza 4
+smgfire* - Red Faction, stock sound (modified)
+smgload* - Alliance of Valiant Arms

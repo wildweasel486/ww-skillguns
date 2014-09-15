@@ -1,0 +1,72 @@
+gameinfo
+{
+	playerclasses = "SkillPlayerDefault","SkillPlayerMedic","SkillPlayerSecurity","SkillPlayerAthlete"
+}
+
+clearskills
+
+skill baby
+{
+	AutoUseHealth
+	AmmoFactor = 2
+	DamageFactor = 0.5
+	EasyBossBrain
+	SpawnFilter = Baby
+	Key = "1"
+	Name = "Easy"
+	PlayerClassName = "Roger", "Aluminum"
+	PlayerClassName = "Walt", "Boo-Boo"
+	PlayerClassName = "Talya", "Greeter"
+	PlayerClassName = "Lena", "Morning Stroll"
+}
+
+skill easy
+{
+	EasyBossBrain
+	SpawnFilter = Easy
+	Key = "2"
+	Name = "Less Easy"
+	PlayerClassName = "Roger", "Iron"
+	PlayerClassName = "Walt", "Mild Scrape"
+	PlayerClassName = "Talya", "Loss Prevention"
+	PlayerClassName = "Lena", "Speedwalk"
+}
+
+skill normal
+{
+	SpawnFilter = Normal
+	DefaultSkill
+	Key = "3"
+	Name = "Normal"
+	PlayerClassName = "Roger", "Lead"
+	PlayerClassName = "Walt", "Blunt Trauma"
+	PlayerClassName = "Talya", "Vault Attendant"
+	PlayerClassName = "Lena", "Afternoon Jog"
+}
+
+skill hard
+{
+	SpawnFilter = Hard
+	Key = "4"
+	Name = "Kinda Hard"
+	PlayerClassName = "Roger", "Uranium"
+	PlayerClassName = "Walt", "Laceration"
+	PlayerClassName = "Talya", "Military Police"
+	PlayerClassName = "Lena", "Evening Run"
+}
+
+skill nightmare
+{
+	AmmoFactor = 2
+	FastMonsters
+	DisableCheats
+	RespawnTime = 12
+	SpawnFilter = Nightmare
+	MustConfirm
+	Key = "5"
+	Name = "Son of a...!"
+	PlayerClassName = "Roger", "Adamantium"
+	PlayerClassName = "Walt", "Testicular Torsion"
+	PlayerClassName = "Talya", "Secret Service"
+	PlayerClassName = "Lena", "Panic Sprint"
+}

@@ -1,0 +1,410 @@
+#include "zcommon.acs"
+
+// =================================
+// Scripts relating to WEAPON SKILL
+// =================================
+
+SCRIPT "GunSkillCheck" (int GunSkill)
+{
+	GunSkill = CheckInventory("WeaponSkillCounter");
+	//PrintBold(i:GunSkill);
+	SetResultValue(GunSkill);
+}
+
+SCRIPT "GunTriggerBar" ENTER
+{
+	if (CheckInventory("TriggerPullCounter") > 0 && CheckInventory("WeaponSkillCounter") > 10) // Don't bother showing the bar after skill level 90 since you already shoot like a champ?
+	{
+		int ID = 9001;
+		int Current = CheckInventory("TriggerPullCounter");
+		int Max = CheckInventory("WeaponSkillCounter") / 5;
+		int Percent = FixedMul((FixedDIv(Current, Max)), 80.0);
+		
+		// Convert Percent back into an int
+		Percent >>= 16;
+		
+		// Setup HUD Size
+		SetHudSize(640, 400, false);
+		
+		// Draw Fill
+		SetFont("BLUEBAR");
+		SetHudClipRect(280, 358, Percent, 12);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, ID, CR_UNTRANSLATED, 320.0, 366.0, 0.01, 0.5);
+		
+		// Draw Back
+		SetFont("BARBACK2");
+		SetHudClipRect(0, 0, 0, 0);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, ID + 1, CR_UNTRANSLATED, 320.0, 366.0, 0.01, 0.5);
+	}
+	
+	Delay(1);
+	restart;
+}
+
+SCRIPT "GunExpBar" ENTER
+{
+	if (true) //if (CheckInventory("WeaponSkillCounter") < 1) // Don't bother showing the bar after skill level 99
+	{
+		int ID = 9003;
+		int Current = CheckInventory("WeaponSkillLevelupCounter");
+		int SkillCounter = CheckInventory("WeaponSkillCounter");
+		int SkillDivisor = FixedDiv(SkillCounter << 16, 15.0);
+		int Max = FixedDiv(100.0, SkillDivisor);
+		int Percent = FixedMul((FixedDIv(Current, Max >> 16)), 80.0);
+		
+		// Convert Percent back into an int
+		Percent >>= 16;
+		
+		// Setup HUD Size
+		SetHudSize(640, 400, false);
+		
+		// Draw Fill
+		SetFont("BLUEBAR");
+		SetHudClipRect(280, 380, Percent, 12);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ID, CR_UNTRANSLATED, 320.0, 384.0, 0.01, 0.5);
+		
+		// Draw Back
+		SetFont("BARBACK2");
+		SetHudClipRect(0, 0, 0, 0);
+		HudMessage(s:"A"; HUDMSG_PLAIN, ID + 1, CR_UNTRANSLATED, 320.0, 384.0, 0.01, 0.5);
+	}
+	
+	Delay(1);
+	restart;
+}
+
+
+SCRIPT "GunSkillLevelup" ENTER
+{
+	TakeInventory("TriggerPullCounter", 999);
+	int LevelingCounter = CheckInventory("WeaponSkillLevelupCounter");
+	int SkillCounter = CheckInventory("WeaponSkillCounter");
+	int SkillDivisor = FixedDiv(SkillCounter << 16, 15.0);
+	int ExpForLevel = FixedDiv(100.0, SkillDivisor);
+	ExpForLevel >>= 16;
+
+	//Thing_ChangeTID(0, 17550 + PlayerNumber());
+	While(True)
+	{
+		LevelingCounter = CheckInventory("WeaponSkillLevelupCounter");
+		//Log(s:"GunExp: ",i:LevelingCounter,s:"; ",i:ExpForLevel,s:" Weapon Exp needed for next");
+		if (CheckInventory("WeaponSkillCounter") == 1) break;
+		if (LevelingCounter >= ExpForLevel)
+		{
+			TakeInventory("WeaponSkillLevelupCounter", 999);
+			TakeInventory("WeaponSkillCounter", 1);
+			GIveInventory("WeaponSkillActual", 1);
+
+			SkillCounter = CheckInventory("WeaponSkillCounter");
+			SkillDivisor = FixedDiv(SkillCounter << 16, 15.0);
+			ExpForLevel = FixedDiv(100.0, SkillDivisor);
+			ExpForLevel >>= 16;
+		}
+		Delay(1);
+	}
+}
+
+#define DEGREES 0.0027
+SCRIPT "GunRecoil" (void) // For pistol.
+{
+	int GunRecoil = (CheckInventory("WeaponSkillCounter") / 10); // Take the WeaponSkillCounter to determine the strength and duration of the weapon kick
+	int RandomAngle = random(-1 * DEGREES, 1 * DEGREES);
+	while (GunRecoil > 0) // Start the loop.
+	{
+		// PrintBold(i:GunRecoil);
+		ChangeActorAngle(0, GetActorAngle(0) + RandomAngle, 1); // View gets kicked a random amount left or right.
+		ChangeActorPitch(0, GetActorPitch(0) - (FixedMul (GunRecoil * 1.0, FixedMul (0.35 , DEGREES))), 1); // View gets kicked upward more based on how large WeaponSkillCounter is.
+		GunRecoil--;
+		Delay(1);
+	}	
+}
+SCRIPT "GunRecoil2" (void) // For shotgun.
+{
+	int GunRecoil = (CheckInventory("WeaponSkillCounter") / 9); // Take the WeaponSkillCounter to determine the strength and duration of the weapon kick
+	int RandomAngle = random(-1 * DEGREES, 1 * DEGREES);
+	while (GunRecoil > 0) // Start the loop.
+	{
+		// PrintBold(i:GunRecoil);
+		ChangeActorAngle(0, GetActorAngle(0) + RandomAngle, 1); // View gets kicked a random amount left or right.
+		ChangeActorPitch(0, GetActorPitch(0) - (FixedMul (GunRecoil * 1.0, FixedMul (0.35 , DEGREES))), 1); // View gets kicked upward more based on how large WeaponSkillCounter is.
+		GunRecoil--;
+		Delay(1);
+	}	
+}
+SCRIPT "GunRecoil3" (void) // For SMG - slightly reduced..
+{
+	int GunRecoil = (CheckInventory("WeaponSkillCounter") / 13); // Take the WeaponSkillCounter to determine the strength and duration of the weapon kick
+	int RandomAngle = random(-1 * DEGREES, 1 * DEGREES);
+	int RecoilMultiplier = 0.25;
+	while (GunRecoil > 0) // Start the loop.
+	{
+		// PrintBold(i:GunRecoil);
+		ChangeActorAngle(0, GetActorAngle(0) + RandomAngle, 1); // View gets kicked a random amount left or right.
+		ChangeActorPitch(0, GetActorPitch(0) - (FixedMul (GunRecoil * RecoilMultiplier, FixedMul (0.35 , DEGREES))), 1); // View gets kicked upward more based on how large WeaponSkillCounter is.
+		GunRecoil--;
+		RecoilMultiplier+=0.1;
+		Delay(1);
+	}	
+}
+
+#define JITTERFACTOR 50.0
+SCRIPT "GunJitter" (void)
+{
+	int GunJitter = CheckInventory("WeaponSkillCounter") << 16; // the << converts to fixed
+	int RandomAngle = random(FixedMul( FixedDiv (-GunJitter, JITTERFACTOR), DEGREES), FixedMul( FixedDiv(GunJitter, JITTERFACTOR), DEGREES));
+	int RandomPitch = random(FixedMul( FixedDiv (-GunJitter, JITTERFACTOR), DEGREES), FixedMul( FixedDiv(GunJitter, JITTERFACTOR), DEGREES));
+	ChangeActorAngle(0, GetActorAngle(0) + RandomAngle, 1);
+	ChangeActorPitch(0, GetActorPitch(0) + RandomPitch, 1);
+}
+#define JITTERFACTOR2 100.0
+SCRIPT "GunJitter2" (void)
+{
+	int GunJitter = CheckInventory("WeaponSkillCounter") << 16; // the << converts to fixed
+	int RandomAngle = random(FixedMul( FixedDiv (-GunJitter, JITTERFACTOR2), DEGREES), FixedMul( FixedDiv(GunJitter, JITTERFACTOR2), DEGREES));
+	int RandomPitch = random(FixedMul( FixedDiv (-GunJitter, JITTERFACTOR2), DEGREES), FixedMul( FixedDiv(GunJitter, JITTERFACTOR2), DEGREES));
+	ChangeActorAngle(0, GetActorAngle(0) + RandomAngle, 1);
+	ChangeActorPitch(0, GetActorPitch(0) + RandomPitch, 1);
+}
+
+SCRIPT "ClearTriggerGauge" RESPAWN
+{
+	TakeInventory("TriggerPullCounter", 999);
+	TakeInventory("UsedMediPatch", 999);
+}
+
+#define COMBO_MAX 175
+int Combo, ComboTimer;
+SCRIPT "CheckCombo" ENTER
+{
+	// Subtract the combo timer each tic
+	if (ComboTimer > 0 && ComboTimer <= COMBO_MAX)
+		//Log(s:"Combo = ",i:Combo,s:"; ComboTimer = ",i:ComboTimer);
+		ComboTimer--;
+	
+	// Add up and randomize the XP and Rank gain
+	if (ComboTimer <= 0)
+	{
+		if (Combo > 1)
+		{
+			//Log(s:"Combo over. Total Combo = ",i:Combo); // To Do: give weapon experience
+			GiveInventory("WeaponSkillLevelupCounter", 1);
+			Combo--;
+		}
+		else
+		{
+            // Reset the combo
+            Combo = 0;
+		}
+	}
+	
+	Delay(1);
+	restart;
+}
+
+function int SetInventory(str Item, int Count)
+{
+	int n = Count - CheckInventory(Item);
+
+	if (n > 0)
+		GiveInventory(Item, n);
+	else if (n < 0)
+		TakeInventory(Item, -n);
+
+	return n;
+}
+
+SCRIPT "AddCombo" (int Amount)
+{
+	ComboTimer = COMBO_MAX;
+	Combo += Amount;
+}
+
+// =================================
+// Scripts relating to MEDICAL SKILL
+// =================================
+
+SCRIPT "MedSkillCheck" (int MedSkill)
+{
+	MedSkill = CheckInventory("MedicalSkillCounter");
+	SetResultValue(MedSkill);
+}
+
+SCRIPT "MedicalTriggerBar" ENTER
+{
+	if (CheckInventory("MediUseCounter") > 0 && CheckInventory("MedicalSkillCounter") > 10) // Don't bother showing the bar after skill level 90 since you already shoot like a champ?
+	{
+		int ID = 9005;
+		int Current = CheckInventory("MediUseCounter");
+		int Max = CheckInventory("MedicalSkillCounter") / 2;
+		int Percent = FixedMul((FixedDIv(Current, Max)), 80.0);
+		
+		// Convert Percent back into an int
+		Percent >>= 16;
+		
+		// Setup HUD Size
+		SetHudSize(640, 400, false);
+		
+		// Draw Fill
+		SetFont("BLUEBAR");
+		SetHudClipRect(280, 358, Percent, 12);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, ID, CR_UNTRANSLATED, 320.0, 366.0, 0.01, 0.5);
+		
+		// Draw Back
+		SetFont("BARBACK2");
+		SetHudClipRect(0, 0, 0, 0);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, ID + 1, CR_UNTRANSLATED, 320.0, 366.0, 0.01, 0.5);
+	}
+	
+	Delay(1);
+	restart;
+}
+
+SCRIPT "UseMedipatch" (int MediSize, int MediSpeed)
+{
+	int MedSkill = CheckInventory("MedicalSkillCounter");
+	int HealDelay = FixedDiv(MedSkill, MediSpeed << 16);
+	int HealAmount = FixedDiv(CheckInventory("MedicalSkillActual") + FixedMul(MediSize, 1.5), 2.5);
+	int LevelUpExp = CheckInventory("MedicalSkillLevelUpCounter");
+	
+	while(CheckInventory("UsedMedipatch") == 1 && HealAmount >= 1 && GetActorProperty(0, APROP_Health) < 100  && CheckInventory("MedicalSupplies") >= 1)
+	{
+		//Log(s:"MedSkill: ",i:MedSkill,s:"; HealDelay ",i:HealDelay,s:"; HealAmount ",i:HealAmount,s:"; LevelUpCounter ",i:LevelUpExp);
+		if (HealDelay == 0)
+		{
+			HealThing(1);
+			GiveInventory("MedicalSkillLevelUpCounter", 1);
+			TakeInventory("MedicalSupplies", 1);
+			//Log(s:"Healed one point.");
+			LevelUpExp = CheckInventory("MedicalSkillLevelUpCounter");
+			HealDelay = FixedDiv(MedSkill, MediSpeed << 16);
+			HealAmount--;
+		}
+		HealDelay--;
+		Delay(1);
+	}
+	//Log(s:"Heal complete.");
+	TakeInventory("UsedMedipatch", 1);
+}
+
+SCRIPT "MedSkillLevelup" ENTER
+{
+	TakeInventory("UsedMediPatch", 999);
+	int LevelingCounter = CheckInventory("MedicalSkillLevelupCounter");
+	int SkillCounter = CheckInventory("MedicalSkillCounter");
+	int SkillDivisor = FixedDiv(SkillCounter << 16, 5.0);
+	int ExpForLevel = FixedDiv(200.0, SkillDivisor);
+	ExpForLevel >>= 16;
+
+	//Thing_ChangeTID(0, 17550 + PlayerNumber());
+	While(True)
+	{
+		LevelingCounter = CheckInventory("MedicalSkillLevelupCounter");
+		if (CheckInventory("MedicalSkillCounter") == 1) break;
+		if (LevelingCounter >= ExpForLevel)
+		{
+			TakeInventory("MedicalSkillLevelupCounter", 999);
+			TakeInventory("MedicalSkillCounter", 1);
+			GIveInventory("MedicalSkillActual", 1);
+
+			SkillCounter = CheckInventory("MedicalSkillCounter");
+			SkillDivisor = FixedDiv(SkillCounter << 16, 5.0);
+			ExpForLevel = FixedDiv(200.0, SkillDivisor);
+			ExpForLevel >>= 16;
+			// PrintBold(s:"Level up!\n",i:"ExpForLevel",s:" healed HP needed for next level");
+		}
+		Delay(1);
+	}
+}
+
+// ==================================
+// Scripts relating to ATHLETIC SKILL
+// ==================================
+
+SCRIPT "AthleticSkillCheck" (int AthleticSkill)
+{
+	AthleticSkill = CheckInventory("AthleticSkillActual");
+	SetResultValue(AthleticSkill);
+}
+
+SCRIPT "SetAthleticSkill" ENTER
+{
+	int AthleticSkill = CheckInventory("AthleticSkillActual");
+	int SpeedValue = 0.5 + (AthleticSkill * 0.01);
+   
+	//Log(s:"AthleticSkill ",i:AthleticSkill,s:"; SpeedValue ",f:SpeedValue);
+	SetActorProperty(0, APROP_Speed, SpeedValue);
+	Delay(1);
+	restart;
+}
+
+SCRIPT "AthleticSkillLevelup" ENTER
+{
+	int LevelingCounter = CheckInventory("AthleticSkillLevelupCounter");
+	int SkillCounter = CheckInventory("AthleticSkillCounter");
+	int SkillDivisor = FixedDiv(SkillCounter << 16, 10.0);
+	int ExpForLevel = FixedDiv(100.0, SkillDivisor);
+	ExpForLevel >>= 16;
+
+	//Thing_ChangeTID(0, 17550 + PlayerNumber());
+	While(True)
+	{
+		LevelingCounter = CheckInventory("AthleticSkillLevelupCounter");
+		//Log(s:"AthExp: ",i:LevelingCounter,s:"; ",i:ExpForLevel,s:" Weapon Exp needed for next");
+		if (CheckInventory("AthleticSkillCounter") == 1) break;
+		if (LevelingCounter >= ExpForLevel)
+		{
+			TakeInventory("AthleticSkillLevelupCounter", 999);
+			TakeInventory("AthleticSkillCounter", 1);
+			GIveInventory("AthleticSkillActual", 1);
+
+			SkillCounter = CheckInventory("AthleticSkillCounter");
+			SkillDivisor = FixedDiv(SkillCounter << 16, 10.0);
+			ExpForLevel = FixedDiv(100.0, SkillDivisor);
+			ExpForLevel >>= 16;
+		}
+		Delay(1);
+	}
+}
+
+
+
+
+// The Trash Heap - Unused or dummied-out scripts go here.
+
+/*
+SCRIPT "ExpForLevelLogger" ENTER
+{
+	int SkillCounter = 100;
+	int SkillDivisor = FixedDiv(SkillCounter << 16, 3.0);
+	int ExpForLevel = FixedDiv(100.0, SkillDivisor);
+	while (SkillCounter > 0.0) // Start the loop.
+	{
+		Log(s:"Level ",d:SkillCounter,s:": ",f:ExpForLevel,s:" shots");
+		SkillCounter--;
+		SkillDivisor = FixedDiv(SkillCounter << 16, 3.0);
+		ExpForLevel = FixedDiv(100.0, SkillDivisor);
+		Delay(1);
+	}
+}
+*/
+
+/* 
+#define LEVELEXP 10
+SCRIPT "OldGunSkillLevelup" ENTER
+{
+	//Thing_ChangeTID(0, 17550 + PlayerNumber());
+	While(True)
+	{
+		int SkillCounter = CheckInventory("WeaponSkillLevelupCounter");
+		if (CheckInventory("WeaponSkillCounter") == 1) break;
+		if (SkillCounter >= LEVELEXP)
+		{
+			// PrintBold(s:"Level up!");
+			TakeInventory("WeaponSkillLevelupCounter", 999);
+			TakeInventory("WeaponSkillCounter", 1);
+			GIveInventory("WeaponSkillActual", 1);
+		}
+		Delay(1);
+	}
+}
+*/

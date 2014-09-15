@@ -1,0 +1,129 @@
+ACTOR UsedMedipatch : Inventory {}
+
+ACTOR MedicalSupplies : Ammo replaces Stimpack
+{
+	Inventory.Amount 10
+	Inventory.MaxAmount 100
+	Ammo.BackpackAmount 10
+	Ammo.BackpackMaxAmount 200
+	Inventory.Icon "MEDIICON"
+	Inventory.PickupMessage "Picked up some medical supplies."
+	States
+	{
+	Spawn:
+		STIM A -1
+		Stop
+	}
+}
+
+ACTOR LargeMedicalSupplies : MedicalSupplies replaces Medikit
+{
+	Inventory.Amount 25
+	Inventory.PickupMessage "Picked up a large box of medical supplies."
+	States
+	{
+	Spawn:
+		MEDI A -1
+		Stop
+	}
+}
+
+ACTOR MedicalKitWeapon : SkillWeapon
+{
+	+Weapon.NoAlert
+	+Weapon.NoAutoFire
+	+Weapon.Ammo_Optional
+	Tag "Medical Supplies"
+	States
+	{
+	Select:
+		MEDF A 1 Offset(0, -320)
+		Goto SelectAnim
+	Ready:
+		MEDF A 1 A_WeaponReady
+		Loop
+	Fire:
+		MEDF A 0 A_PlaySound("medikit/open")
+		TNT1 A 0 A_JumpIf(health >= 100, "DontHeal2")
+		TNT1 A 0 A_JumpIfInventory("UsedMedipatch", 1, "DontHeal")
+		MEDF A 0 A_JumpIfInventory("MedicalSupplies", 1, "FireLoop")
+		MEDF A 1 A_Print("Out of Medical Supplies!")
+		Goto Ready
+	AltfireReturn:
+		MEDF A 1 Offset(-72, 74)
+		MEDF A 1 Offset(-56, 61)
+		MEDF A 1 Offset(-42, 52)
+		MEDF A 1 Offset(-30, 45)
+		MEDF A 1 Offset(-20, 40)
+		MEDF A 1 Offset(-12, 37)
+		MEDF A 1 Offset(-6, 35)
+		MEDF A 1 Offset(-3, 34)
+		MEDF A 1 Offset(-1, 33)
+		Goto Ready
+	DontHeal:
+		TNT1 A 0 A_Print("Can't use Medipatch, already healing!")
+		Goto Ready
+	DontHeal2:
+		TNT1 A 0 A_Print("Can't use Medipatch, health already full!")
+		Goto Ready
+	FireLoop:
+		MEDF A 0 A_JumpIfInventory("MediUseCounter", (CallACS("MedSkillCheck") / 2), "WeaponFire")
+		MEDF A 0 A_JumpIfInventory("MediUseCounter", CallACS("MedSkillCheck"), "WeaponFire")
+		MEDF A 0 A_JumpIfInventory("MedicalSkillActual", 100, "WeaponFire")
+		MEDF A 0 A_GiveInventory("MediUseCounter", 1)
+		MEDF A 1
+		MEDF A 0 A_Refire("FireLoop")
+		MEDF A 1 A_TakeInventory("MediUseCounter", 100)
+		Goto Ready
+	WeaponFire:
+		TNT1 A 0 A_PlaySound("medikit/use")
+		TNT1 A 0 A_GiveInventory("UsedMedipatch", 1)
+		MEDF A 1 ACS_NamedExecuteAlways("UseMedipatch", 0, 10, 3)
+		MEDF A 1 A_TakeInventory("MediUseCounter", 100)
+		Goto Ready
+	}
+}
+
+ACTOR WaterFlask : CustomInventory replaces HealthBonus
+{
+	Inventory.Icon "FLSKICON"
+	Inventory.InterHubAmount 0x7fffffff
+	Inventory.MaxAmount 20
+	Inventory.PickupMessage "Found some water."
+	Tag "Water Bottle"
+	Scale 0.65
+	+INVENTORY.INVBAR
+	+INVENTORY.UNDROPPABLE
+	+INVENTORY.KEEPDEPLETED
+	+INVENTORY.UNTOSSABLE
+	States
+	{
+	Spawn:
+		FLSK A -1
+		Stop
+	Use:
+		TNT1 A 0 A_JumpIf(health >= 100, "DontDrinkNoNoise")
+	UseLoop:
+		TNT1 A 0 A_JumpIf(health >= 100, "DontDrink")
+		TNT1 A 0 A_TakeInventory("WaterFlask", 1)
+		TNT1 A 0 A_JumpIfInventory("AthleticSkillCounter", 80, 2)
+		TNT1 A 0 A_GiveInventory("Health", 1)
+		TNT1 A 0 A_JumpIfInventory("AthleticSkillCounter", 60, 2)
+		TNT1 A 0 A_GiveInventory("Health", 1)
+		TNT1 A 0 A_JumpIfInventory("AthleticSkillCounter", 40, 2)
+		TNT1 A 0 A_GiveInventory("Health", 1)
+		TNT1 A 0 A_JumpIfInventory("AthleticSkillCounter", 20, 2)
+		TNT1 A 0 A_GiveInventory("Health", 1)
+		TNT1 A 0 A_GiveInventory("Health", 1)
+		TNT1 A 0 A_JumpIfInventory("WaterFlask", 1, "UseLoop")
+	FlaskEmpty:
+		TNT1 A 0 A_PlaySound("water/drink", CHAN_ITEM)
+		Fail
+	DontDrink:
+		TNT1 A 0 A_PlaySound("water/drink", CHAN_ITEM)
+		Fail
+	DontDrinkNoNoise:
+		TNT1 A 0 A_Print("Can't drink water, health already full!")
+		Fail
+	}
+}

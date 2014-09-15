@@ -1,0 +1,125 @@
+pistol/fire pistol
+grunt/attack pistolnm
+pistol/reloadstart reload0
+pistol/clipout reload1
+pistol/clipin reload2
+pistol/cock reload3
+pistol/dryfire dryfire
+pistol/ready pstready
+
+shotgun/fire shotgun
+shotguy/attack shotgnm
+shotgun/load shotload
+shotgun/back shotback
+shotgun/fwd shotfwd
+
+punch/swing pchswing
+punch/hit pchhit
+punch/wall pchwall
+
+$random smg/fire { smg/fire1 smg/fire2 smg/fire3 smg/fire4 smg/fire5 smg/fire6 }
+smg/fire1 smgfire1
+smg/fire2 smgfire2
+smg/fire3 smgfire3
+smg/fire4 smgfire4
+smg/fire5 smgfire5
+smg/fire6 smgfire6
+$alias chainguy/attack smg/fire
+smg/clipout smgload1
+smg/clipin smgload2
+smg/clipslap smgload3
+
+water/drink drinkwtr
+
+medikit/open mediopen
+medikit/use mediuse
+
+// Player Sounds
+
+$random RogerPainSmall { RogerPainSmall1 RogerPainSmall2 RogerPainSmall3 }
+RogerPainSmall1 RogrPnS1
+RogerPainSmall2 RogrPnS2
+RogerPainSmall3 RogrPnS3
+$random RogerPainHeavy { RogerPainHeavy1 RogerPainHeavy2 }
+RogerPainHeavy1 RogrPnH1
+RogerPainHeavy2 RogrPnH2
+$playeralias Roger male *pain100 RogerPainSmall
+$playeralias Roger male *pain75 RogerPainSmall
+$playeralias Roger male *pain50 RogerPainHeavy
+$playeralias Roger male *pain25 RogerPainHeavy
+$playersound Roger male *death RogrDth
+$playersound Roger male *xdeath RogrDHi
+$playersound Roger male *land RogrOof
+$playersound Roger male *usefail RogrNWay
+
+$random WaltPainSmall { WaltPainSmall1 WaltPainSmall2 }
+WaltPainSmall1 WaltPnS1
+WaltPainSmall2 WaltPnS2
+$random WaltPainMedium { WaltPainMedium1 WaltPainMedium2 }
+WaltPainMedium1 WaltPnM1
+WaltPainMedium2 WaltPnM2
+$random WaltPainHeavy { WaltPainHeavy1 WaltPainHeavy2 }
+WaltPainHeavy1 WaltPnH1
+WaltPainHeavy2 WaltPnH2
+$random WaltDeathNormal { WaltDeathNormal1 WaltDeathNormal2 }
+WaltDeathNormal1 WaltDth1
+WaltDeathNormal2 WaltDth2
+$random WaltDeathHeavy { WaltDeathHeavy1 WaltDeathHeavy2 }
+WaltDeathHeavy1 WaltDhi1
+WaltDeathHeavy2 WaltDhi2
+$playeralias Walt male *pain100 WaltPainSmall
+$playeralias Walt male *pain75 WaltPainSmall
+$playeralias Walt male *pain50 WaltPainHeavy
+$playeralias Walt male *pain25 WaltPainHeavy
+$playeralias Walt male *death WaltDeathNormal
+$playeralias Walt male *xdeath WaltDeathHeavy
+$playersound Walt male *land WaltOof
+$playersound Walt male *usefail WaltNWay
+
+$random TalyaPain { TalyaPain1 TalyaPain2 TalyaPain3 TalyaPain4 TalyaPain5 TalyaPain6 TalyaPain7 }
+TalyaPain1 TalyPn01
+TalyaPain2 TalyPn02
+TalyaPain3 TalyPn03
+TalyaPain4 TalyPn04
+TalyaPain5 TalyPn05
+TalyaPain6 TalyPn06
+TalyaPain7 TalyPn07
+$random TalyaDeath { TalyaDeath1 TalyaDeath2 TalyaDeath3 TalyaDeath4 TalyaDeath5 TalyaDeath6 }
+TalyaDeath1 TalyDth1
+TalyaDeath2 TalyDth2
+TalyaDeath3 TalyDth3
+TalyaDeath4 TalyDth4
+TalyaDeath5 TalyDth5
+TalyaDeath6 TalyDth6
+$playeralias Talya male *pain100 TalyaPain
+$playersounddup Talya male *pain75 *pain100
+$playersounddup Talya male *pain50 *pain100
+$playersounddup Talya male *pain25 *pain100
+$playeralias Talya male *death TalyaDeath
+$playeralias Talya male *xdeath TalyaDeath
+$playersound Talya male *land TalyOof
+$playersound Talya male *usefail TalyNWay
+
+$random LenaPainSmall { LenaPainSmall1 LenaPainSmall2 }
+LenaPainSmall1 LenaPnS1
+LenaPainSmall2 LenaPnS2
+$random LenaPainMedium { LenaPainMedium1 LenaPainMedium2 }
+LenaPainMedium1 LenaPnM1
+LenaPainMedium2 LenaPnM2
+$random LenaPainHeavy { LenaPainHeavy1 LenaPainHeavy2 }
+LenaPainHeavy1 LenaPnH1
+LenaPainHeavy2 LenaPnH2
+$random LenaDeathNormal { LenaDeathNormal1 LenaDeathNormal2 }
+LenaDeathNormal1 LenaDth1
+LenaDeathNormal2 LenaDth2
+$random LenaDeathHeavy { LenaDeathHeavy1 LenaDeathHeavy2 }
+LenaDeathHeavy1 LenaDhi1
+LenaDeathHeavy2 LenaDhi2
+$playeralias Lena male *pain100 LenaPainSmall
+$playeralias Lena male *pain75 LenaPainSmall
+$playeralias Lena male *pain50 LenaPainHeavy
+$playeralias Lena male *pain25 LenaPainHeavy
+$playeralias Lena male *death LenaDeathNormal
+$playeralias Lena male *xdeath LenaDeathHeavy
+$playersound Lena male *land LenaOof
+$playersound Lena male *usefail LenaNWay

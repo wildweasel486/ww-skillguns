@@ -1,0 +1,311 @@
+#include "actors/temp.txt"
+#include "actors/effects.txt"
+#include "actors/pistol.txt"
+#include "actors/shotgun.txt"
+#include "actors/smg.txt"
+#include "actors/medical.txt"
+
+ACTOR SkillPlayerDefault : DoomPlayer // Roger Berneche, Metalworker. Also serves as template for other classes.
+{
+	Player.ViewHeight 48
+	Player.JumpZ 6
+	Player.ForwardMove 0.67, 1.0
+	Player.SideMove 0.57, 0.85
+	Player.StartItem "PistolLoaded", 15
+	Player.StartItem "SkillClip", 30 //Roger is resourceful and found more ammo than the others.
+	Player.StartItem "ShotgunLoaded", 8 //Roger is also very lucky and finds weapons fully loaded instead of halfway.
+	Player.StartItem "SMGLoaded", 32
+	Player.StartItem "SkillPistol"
+	Player.StartItem "MedicalKitWeapon"
+	Player.StartItem "MedicalSupplies", 25 // Roger's resourcefulness also starts him with some medical supplies.
+	Player.StartItem "WeaponSkillCounter", 100
+	Player.StartItem "MedicalSkillCounter", 100
+	Player.StartItem "AthleticSkillCounter", 100
+	Player.StartItem "WaterFlask", 10
+	Player.StartItem "IsRoger" // Class indicator flag.
+	Player.WeaponSlot 1, "MedicalKitWeapon"
+	Player.WeaponSlot 2, "SkillPistol"
+	Player.WeaponSlot 3, "SkillShotgun"
+	Player.WeaponSlot 4, "SkillSMG"
+	Player.WeaponSlot 5, ""
+	Player.WeaponSlot 6, ""
+	Player.WeaponSlot 7, ""
+	Player.DisplayName "Roger"
+	Player.SoundClass "Roger"
+	States
+	{
+	Spawn:
+		WORK A -1 SetPlayerProperty(0,1,2)
+		Loop
+	See:
+		WORK ABCD 4 
+		Loop
+	Missile:
+		WORK E 12 
+		Goto Spawn
+	Melee:
+		WORK F 6 BRIGHT
+		Goto Missile
+	Pain:
+		WORK G 4 A_SetBlend ("20 00 00", 0.7, 6)
+		WORK G 4 A_Pain
+		Goto Spawn
+	Death:
+		WORK H 10
+		WORK I 10 A_PlayerScream
+		WORK J 10 A_NoBlocking
+		WORK L 10
+		WORK M -1
+		Stop
+	XDeath:
+		WORK N 5 A_SkullPop
+		WORK O 5 A_XScream
+		WORK P 5 A_NoBlocking
+		WORK QRSTU 5
+		WORK V -1
+		Stop
+	}
+}
+
+ACTOR SkillPlayerMedic : SkillPlayerDefault // Walt Greendale, trauma nurse.
+{
+	Player.StartItem "PistolLoaded", 15 // Walt found a pistol but no ammo.
+	Player.StartItem "SkillPistol"
+	Player.StartItem "ShotgunLoaded", 4
+	Player.StartItem "SMGLoaded", 16
+	Player.StartItem "MedicalKitWeapon"
+	Player.StartItem "MedicalSupplies", 50 // Walt starts with more medical supplies than Roger.
+	Player.StartItem "WeaponSkillCounter", 100
+	Player.StartItem "MedicalSkillCounter", 60
+	Player.StartItem "MedicalSkillActual", 40 // Walt also starts with Level 40 medical skills.
+	Player.StartItem "AthleticSkillCounter", 100
+	Player.StartItem "WaterFlask", 10
+	Player.StartItem "IsMedic" // Class indicator flag.
+	Player.DisplayName "Walt"
+	Player.SoundClass "Walt"
+	States
+	{
+	Spawn:
+		PMSC A -1 SetPlayerProperty(0,1,2)
+		Loop
+	See:
+		PMSC ABCD 4 
+		Loop
+	Missile:
+		PMSC E 12 
+		Goto Spawn
+	Melee:
+		PMSC F 6 BRIGHT
+		Goto Missile
+	Pain:
+		PMSC G 4 A_SetBlend ("20 00 00", 0.7, 6)
+		PMSC G 4 A_Pain
+		Goto Spawn
+	Death:
+		PMSC H 10
+		PMSC I 10 A_PlayerScream
+		PMSC J 10 A_NoBlocking
+		PMSC L 10
+		PMSC M -1
+		Stop
+	XDeath:
+		PMSC N 5 A_SkullPop
+		PMSC O 5 A_XScream
+		PMSC P 5 A_NoBlocking
+		PMSC QRSTU 5
+		PMSC V -1
+		Stop
+	}
+}
+
+ACTOR SkillPlayerSecurity : SkillPlayerDefault // Talya Kapersky, UAC security.
+{
+	Player.StartItem "PistolLoaded", 15
+	Player.StartItem "SkillClip", 15 // Talya starts with one magazine, since it's her job to carry it.
+	Player.StartItem "SkillPistol"
+	Player.StartItem "ShotgunLoaded", 4
+	Player.StartItem "SMGLoaded", 16
+	Player.StartItem "MedicalKitWeapon"
+	Player.StartItem "WeaponSkillCounter", 60 // Talya starts at level 40 weapon skills.
+	Player.StartItem "WeaponSkillActual", 40
+	Player.StartItem "MedicalSkillCounter", 100
+	Player.StartItem "AthleticSkillCounter", 100
+	Player.StartItem "WaterFlask", 10
+	Player.StartItem "IsSecurity" // Class indicator flag.
+	Player.DisplayName "Talya"
+	Player.SoundClass "Talya"
+	States
+	{
+	Spawn:
+		ILLP A -1 SetPlayerProperty(0,1,2)
+		Loop
+	See:
+		ILLP ABCD 4 
+		Loop
+	Missile:
+		ILLP E 12 
+		Goto Spawn
+	Melee:
+		ILLP F 6 BRIGHT
+		Goto Missile
+	Pain:
+		ILLP G 4 A_SetBlend ("20 00 00", 0.7, 6)
+		ILLP G 4 A_Pain
+		Goto Spawn
+	Death:
+		ILLP H 10
+		ILLP I 10 A_PlayerScream
+		ILLP J 10 A_NoBlocking
+		ILLP L 10
+		ILLP M -1
+		Stop
+	XDeath:
+		ILLP N 5 A_SkullPop
+		ILLP O 5 A_XScream
+		ILLP P 5 A_NoBlocking
+		ILLP QRSTU 5
+		ILLP V -1
+		Stop
+	}
+}
+
+ACTOR SkillPlayerAthlete : SkillPlayerDefault // Lena Falstein, marathoner/food service.
+{
+	Player.StartItem "PistolLoaded", 15 // Lena only found a loaded pistol, no ammo.
+	Player.StartItem "SkillPistol"
+	Player.StartItem "ShotgunLoaded", 4
+	Player.StartItem "SMGLoaded", 16
+	Player.StartItem "MedicalKitWeapon"
+	Player.StartItem "WeaponSkillCounter", 100
+	Player.StartItem "MedicalSkillCounter", 100
+	Player.StartItem "AthleticSkillCounter", 50 // Lena starts with level 50 athletic skills.
+	Player.StartItem "AthleticSkillActual", 50 // This makes her much quicker, as well as making her water flask more effective.
+	Player.StartItem "WaterFlask", 10
+	Player.StartItem "IsAthlete" // Class indicator flag.
+	Player.DisplayName "Lena"
+	Player.SoundClass "Lena"
+	States // Reusing the Illucia sprites, for now, until Lena gets her own.
+	{
+	Spawn:
+		ILLP A -1 SetPlayerProperty(0,1,2)
+		Loop
+	See:
+		ILLP ABCD 4 
+		Loop
+	Missile:
+		ILLP E 12 
+		Goto Spawn
+	Melee:
+		ILLP F 6 BRIGHT
+		Goto Missile
+	Pain:
+		ILLP G 4 A_SetBlend ("20 00 00", 0.7, 6)
+		ILLP G 4 A_Pain
+		Goto Spawn
+	Death:
+		ILLP H 10
+		ILLP I 10 A_PlayerScream
+		ILLP J 10 A_NoBlocking
+		ILLP L 10
+		ILLP M -1
+		Stop
+	XDeath:
+		ILLP N 5 A_SkullPop
+		ILLP O 5 A_XScream
+		ILLP P 5 A_NoBlocking
+		ILLP QRSTU 5
+		ILLP V -1
+		Stop
+	}
+}
+
+ACTOR TriggerPullCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR WeaponSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR WeaponSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR WeaponSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR PistolSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR PistolSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR PistolSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR ShotgunSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR ShotgunSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR ShotgunSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR SMGSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR SMGSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR SMGSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR MediUseCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR MedicalSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR MedicalSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR MedicalSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR AthleticSkillCounter : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR AthleticSkillActual : Inventory
+{
+	Inventory.MaxAmount 100
+}
+ACTOR AthleticSkillLevelupCounter : Inventory
+{
+	Inventory.MaxAmount 0x7fffffff
+}
+
+ACTOR IsRoger : Inventory {}
+ACTOR IsAthlete : Inventory {}
+ACTOR IsMedic : Inventory {}
+ACTOR IsSecurity : Inventory {}

@@ -1,0 +1,225 @@
+ACTOR SkillShell : Ammo replaces Shell
+{
+  Inventory.PickupMessage "$GOTSHELLS" // "Picked up 4 shotgun shells."
+  Inventory.Amount 4
+  Inventory.MaxAmount 24
+  Ammo.BackpackAmount 8
+  Ammo.BackpackMaxAmount 60
+  Inventory.Icon "SHELA0"
+  States
+  {
+  Spawn:
+    SHEL A -1
+    Stop
+  }
+}
+
+ACTOR SkillShellBox : SkillShell replaces ShellBox
+{
+  Inventory.PickupMessage "$GOTSHELLBOX" // "Picked up a box of shotgun shells."
+  Inventory.Amount 16
+  States
+  {
+  Spawn:
+    SBOX A -1
+    Stop
+  }
+}
+
+ACTOR Shell2 : SkillShell replaces RocketAmmo {}
+ACTOR ShellBox2 : SkillShellBox replaces RocketBox {}
+
+ACTOR ShotgunLoaded : Ammo
+{
+	Inventory.MaxAmount 8
+}
+ACTOR ShotgunReloading : Inventory {}
+
+ACTOR SkillShotgun : SkillWeapon replaces Shotgun
+{
+	Weapon.AmmoType1 "ShotgunLoaded"
+	Weapon.AmmoUse1 1
+	Weapon.AmmoGive1 0
+	Weapon.AmmoType2 "SkillShell"
+	Weapon.AmmoUse2 0
+	Weapon.AmmoGive2 8
+	Tag "Dakota TT93"
+	+Weapon.NoAlert
+	+Weapon.NoAutoFire
+	+Weapon.Ammo_Optional
+	Inventory.PickupMessage "Found a Shotgun! (slot 2)"
+	States
+	{
+	Spawn:
+		SHOT A -1
+		Stop
+	Select:
+		SHTG A 1 Offset(0, -320)
+		Goto SelectAnim
+	Ready:
+		SHTG A 1 A_WeaponReady(WRF_ALLOWRELOAD)
+		Loop
+	AltfireReturn:
+		SHTG A 1 Offset(-72, 74)
+		SHTG A 1 Offset(-56, 61)
+		SHTG A 1 Offset(-42, 52)
+		SHTG A 1 Offset(-30, 45)
+		SHTG A 1 Offset(-20, 40)
+		SHTG A 1 Offset(-12, 37)
+		SHTG A 1 Offset(-6, 35)
+		SHTG A 1 Offset(-3, 34)
+		SHTG A 1 Offset(-1, 33)
+		Goto Ready
+	Dryfire:
+		SHTG A 1 Offset(0,35) A_PlaySound("Pistol/dryfire", 5)
+		SHTG A 1 Offset(0,34)
+		SHTG A 1 Offset(0,33)
+		Goto Ready
+	Fire:
+		SHTG A 0 A_PlaySound("pistol/ready", 6)
+	FireLoop:
+		SHTG A 0 A_JumpIfInventory("TriggerPullCounter", (CallACS("GunSkillCheck") / 5), "WeaponFire")
+		SHTG A 0 A_JumpIfInventory("TriggerPullCounter", CallACS("GunSkillCheck"), "WeaponFire")
+		SHTG A 0 A_JumpIfInventory("WeaponSkillActual", 100, "WeaponFire")
+		SHTG A 0 A_GiveInventory("TriggerPullCounter", 1)
+		SHTG A 0 ACS_NamedExecuteWithResult("GunJitter2")
+		SHTG A 0 A_Jump(256, "RandomJitter1","RandomJitter2","RandomJitter3","RandomJitter4")
+	RandomJitter1:
+		SHTG A 1 Offset(-1,33)
+		SHTG A 0 A_Refire("FireLoop")
+		Goto ReleaseTrigger
+	RandomJitter2:
+		SHTG A 1 Offset(1,33)
+		SHTG A 0 A_Refire("FireLoop")
+		Goto ReleaseTrigger
+	RandomJitter3:
+		SHTG A 1 Offset(-1,35)
+		SHTG A 0 A_Refire("FireLoop")
+		Goto ReleaseTrigger
+	RandomJitter4:
+		SHTG A 1 Offset(1,35)
+		SHTG A 0 A_Refire("FireLoop")
+		Goto ReleaseTrigger
+	ReleaseTrigger:
+		SHTG A 1 A_TakeInventory("TriggerPullCounter", 100)
+		Goto Ready
+	WeaponFire:
+		SHTG A 0 A_TakeInventory("TriggerPullCounter", 100)
+		SHTG A 0 A_JumpIfNoAmmo("Dryfire")
+		SHTG A 0 A_PlaySound("shotgun/fire", CHAN_WEAPON)
+		SHTG A 0 A_GunFlash
+		SHTG A 0 ACS_NamedExecuteWithResult("GunRecoil2")
+		SHTG A 0 A_Recoil((CallACS("GunSkillCheck") / 10.0) * cos(pitch))
+		SHTG A 1 Offset(0,40) A_FireBullets(4, 4, 8, 10, "SkillPuffPlayer", FBF_USEAMMO)
+		SHTG A 1 Offset(0,38) A_GiveInventory("WeaponSkillLevelupCounter", 1)
+		SHTG A 1 Offset(0,36) A_AlertMonsters
+		SHTG A 1 Offset(1,45)
+		SHTG A 1 Offset(1,55)
+		SHTG A 1 Offset(1,55)
+		SHTG A 1 Offset(1,53)
+		SHTG A 1 Offset(1,51)
+		SHTG A 1 Offset(1,49) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG A 1 Offset(1,47) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG A 1 Offset(1,45) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG A 1 Offset(1,43) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG A 1 Offset(1,41) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG A 1 Offset(1,39) A_SetTics(CallACS("GunSkillCheck") / 15)
+		SHTG B 1 Offset(5,34) A_PlaySound("shotgun/back", 5)
+		SHTG B 1 Offset(2,36)
+		SHTG B 1 Offset(-1,38)
+		SHTG C 1 Offset(3,35)
+		SHTG C 1 Offset(-1,38)
+		SHTG D 1 Offset(-4,41)
+		SHTG D 1 Offset(-4,43)
+		SHTG D 1 Offset(-4,45) A_SetTics(CallACS("GunSkillCheck") / 6)
+		SHTG D 1 Offset(-3,44)
+		SHTG D 1 Offset(-2,40) A_PlaySound("shotgun/fwd", 6)
+		SHTG D 1 Offset(-4,41)
+		SHTG C 1 Offset(-1,38)
+		SHTG C 1 Offset(-1,37)
+		SHTG B 1 Offset(1,36)
+		SHTG B 1 Offset(2,36)
+		SHTG B 1 Offset(5,34)
+		SHTG A 1
+		Goto Ready
+	Reload:
+		SHTG A 0 A_JumpIfInventory("ShotgunLoaded",8,2)
+		SHTG A 0 A_JumpIfInventory("SkillShell",1,"ProperReload")
+		SHTG A 1
+		Goto Ready
+	ProperReload:
+		TNT1 A 0 A_GiveInventory("ShotgunReloading",1)
+		SHTG A 1 Offset(-1,33)
+		SHTG B 1 Offset(5,34)
+		SHTG B 1 Offset(2,36)
+		SHTG B 1 Offset(-1,38)
+		SHTG C 1 Offset(3,35)
+		SHTG C 1 Offset(-1,38)
+		SHTG C 1 Offset(-4,41)
+		SHTG C 1 Offset(-6,46)
+		SHTG C 1 Offset(-7,55)
+	ReloadWork:
+		SHTG C 1 A_SetTics(CallACS("GunSkillCheck") / 5 + random(0,CallACS("GunSkillCheck") / 20))
+		SHTG C 0 A_TakeInventory("SkillShell",1,TIF_NOTAKEINFINITE)
+		SHTG C 0 A_GiveInventory("ShotgunLoaded",1)
+		SHTG C 1 Offset(-8,58) A_PlayWeaponSound("Shotgun/Load")
+		SHTG C 1 Offset(-9,64)
+		SHTG C 1 Offset(-10,70)
+		SHTG C 1 Offset(-10,68)
+		SHTG C 1 Offset(-9,66)
+		SHTG C 1 Offset(-9,64)
+		SHTG C 1 Offset(-9,62)
+		SHTG C 1 Offset(-8,61) A_WeaponReady(1)
+		SHTG C 1 Offset(-8,60) A_WeaponReady(1)
+		SHTG CC 1 Offset(-8,59) A_WeaponReady(1)
+		SHTG CCC 1 Offset(-8,58) A_WeaponReady(1)
+		SHTG A 0 A_JumpIfInventory("ShotgunLoaded",8,"ReloadFinish")
+		SHTG A 0 A_JumpIfInventory("SkillShell",1,"ReloadWork")
+		Goto ReloadFinish
+	ReloadFinish:
+		SHTG C 1 Offset(-7,57)
+		SHTG C 1 Offset(-6,55)
+		SHTG C 1 Offset(-5,52)
+		SHTG C 1 Offset(-4,48)
+		SHTG C 1 Offset(-3,44)
+		SHTG C 1 Offset(-2,41)
+		SHTG C 1 Offset(-1,39)
+		SHTG C 1 Offset(-2,38) A_SetTics(CallACS("GunSkillCheck") / 3)
+		SHTG C 1 Offset(-3,39)  A_PlaySound("shotgun/back", 5)
+		SHTG D 1 Offset(-4,41)
+		SHTG D 1 Offset(-4,43)
+		SHTG D 1 Offset(-4,45) A_SetTics(CallACS("GunSkillCheck") / 6)
+		SHTG D 1 Offset(-3,44)
+		SHTG D 1 Offset(-2,40)
+		SHTG D 1 Offset(-4,41) A_PlaySound("shotgun/fwd", 6)
+		SHTG C 1 Offset(-1,38)
+		SHTG C 1 Offset(-1,37)
+		SHTG B 1 Offset(1,36)
+		SHTG B 1 Offset(2,36)
+		SHTG B 1 Offset(5,34) A_TakeInventory("ShotgunReloading",1)
+		Goto Ready
+	Flash:
+		SHTF A 2 BRIGHT A_Light2
+		SHTF B 2 BRIGHT A_Light1
+		TNT1 A 0 A_Light0
+		Stop
+	}
+}
+
+ACTOR SkillShotgunGiver : CustomInventory replaces SuperShotgun
+{
+	Inventory.PickupMessage "Found a Shotgun! (slot 2)"
+	Inventory.PickupSound "misc/w_pkup"
+	States
+	{
+	Spawn:
+		SHOT A -1
+		Stop
+	Pickup:
+		TNT1 A 0 A_GiveInventory("SkillShotgun", 1)
+		Stop
+	}
+}
+ACTOR SkillShotgun3 : SkillShotgunGiver replaces Chainsaw {}
+ACTOR SkillShotgun4 : SkillShotgunGiver replaces RocketLauncher {}
+ACTOR SkillShotgun5 : SkillShotgunGiver replaces BFG9000 {}

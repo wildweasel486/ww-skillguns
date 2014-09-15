@@ -1,0 +1,20 @@
+Credits that won't fit in the other directories (hint: check the Sounds folder for sound credits):
+
+Coding assistance, bug fixes, etc:
+- Kate
+- Kyle873
+- Minigunner
+- ijon
+- Snarboo
+- Ed the Bat
+- SidDoyle
+
+Sprites:
+Roger (metalworker): Enjay (Rogue Entertainment base)
+Walt (trauma nurse): Scalliano
+Talya (security): Illucia sprite from Skulltag
+Lena (marathoner): Unimplemented as of yet.
+Pistol: Mike12 (base frames), JoeyTD (reload frames)
+Shotgun: Unimplemented as of yet.
+SMG: Mike12 (base frames), TheMightyHeracross (reload frames)
+Water bottle: greentea12

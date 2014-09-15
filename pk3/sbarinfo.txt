@@ -1,0 +1,48 @@
+statusbar fullscreen, fullscreenoffsets
+{
+	DrawMugShot "STF", 5, 10, -35;
+	DrawNumber 3, HUDFONT_DOOM, Green, Health, 46, -50, 0, Red, 25, Blue, 101;
+
+	DrawString SMALLFONT, White, "MEDLVL", 47, -12, 0, Alignment(left);
+	DrawNumber 3, BIGFONT, White, MedicalSkillActual, Alignment(left), 100, -12;
+	
+	DrawImage armoricon, 67, -20;
+	DrawNumber 3, SMALLFONT, Green, Armor, whennotzero, alignment(center), 65, -20, 0, Red, 25, Blue, 101;
+	
+	DrawSelectedInventory alwaysshowcounter|drawshadow(1,1), SMALLFONT, 85, -42, 100, -20, Green;
+	
+	DrawImage "MEDIICON", 120, -42;
+	DrawNumber 3, SMALLFONT, Green, "MedicalSupplies", Alignment(center), 135, -20, 0, Red, 25, Blue, 101;
+	InInventory UsedMedipatch
+	{
+		DrawString SMALLFONT, White, "USING", 135, -33, 0, Alignment(center);
+	}
+	
+	//drawimage "BARBACK2", -83, -11;
+	//drawbar "BLUEBAR", "BARBACK", TriggerPullCounter, horizontal, -82, -10;
+	
+	DrawImage "AMMOA0", -24, -30;
+	InInventory SkillSMG
+	{
+		DrawImage "BRRPA0", -32, -35;
+		DrawNumber 3, SMALLFONT, Yellow, SMGLoaded, Alignment(right), -3, -46;
+	}
+	DrawNumber 3, SMALLFONT, Red, SMGClip, Alignment(right), -3, -38;
+	
+	DrawImage "SHELA0", -48, -14;
+	InInventory SkillShotgun
+	{
+		DrawImage "SHOTA0", -56, -10;
+		DrawNumber 3, SMALLFONT, Yellow, ShotgunLoaded, Alignment(right), -56, -28;
+	}
+	DrawNumber 3, SMALLFONT, Red, SkillShell, Alignment(right), -56, -20;
+	
+	DrawImage "PISTA0", -25, -15;
+	DrawNumber 3, SMALLFONT, Red, SkillClip, Alignment(right), -3, -20;
+	DrawNumber 3, SMALLFONT, Yellow, PistolLoaded, Alignment(right), -3, -28;
+	
+	DrawString SMALLFONT, White, "GUNLVL", -38, -12, 0, Alignment(right);
+	DrawNumber 3, BIGFONT, White, WeaponSkillActual, Alignment(right), -6, -12;
+	
+	DrawKeyBar 12, horizontal, 9, 9, -60;
+}
